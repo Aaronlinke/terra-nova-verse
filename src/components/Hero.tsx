@@ -26,13 +26,16 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
           <Link to="/farm">
             <Button size="lg" className="group">
-              Jetzt starten
+              Interaktive Farm
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
-          <Button size="lg" variant="outline">
-            Mehr erfahren
-          </Button>
+          <Link to="/emotional-farming">
+            <Button size="lg" variant="outline" className="group">
+              Emotionale Landwirtschaft
+              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
