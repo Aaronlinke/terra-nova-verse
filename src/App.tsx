@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Farm from "./pages/Farm";
 import EmotionalFarming from "./pages/EmotionalFarming";
+import AIBioMentor from "./pages/AIBioMentor";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/farm" element={<Farm />} />
           <Route path="/emotional-farming" element={<EmotionalFarming />} />
+          <Route path="/ai-mentor" element={<AIBioMentor />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
