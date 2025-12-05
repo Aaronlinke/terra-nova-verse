@@ -42,6 +42,12 @@ const Hero = () => {
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
+          <Link to="/genetic-lab">
+            <Button size="lg" variant="outline" className="group">
+              Genetisches Labor
+              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
