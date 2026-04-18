@@ -66,6 +66,12 @@ const Hero = () => {
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
+          <Link to="/craftsmanship">
+            <Button size="lg" variant="outline" className="group">
+              Bio-Handwerk
+              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
