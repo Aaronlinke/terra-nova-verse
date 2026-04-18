@@ -9,6 +9,7 @@ import EmotionalFarming from "./pages/EmotionalFarming";
 import AIBioMentor from "./pages/AIBioMentor";
 import GeneticLab from "./pages/GeneticLab";
 import ClimateTourism from "./pages/ClimateTourism";
+import BioNarrative from "./pages/BioNarrative";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/ai-mentor" element={<AIBioMentor />} />
           <Route path="/genetic-lab" element={<GeneticLab />} />
           <Route path="/climate-tourism" element={<ClimateTourism />} />
+          <Route path="/bio-narrative" element={<BioNarrative />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
