@@ -12,6 +12,7 @@ import ClimateTourism from "./pages/ClimateTourism";
 import BioNarrative from "./pages/BioNarrative";
 import ARScanner from "./pages/ARScanner";
 import Craftsmanship from "./pages/Craftsmanship";
+import CryptoBotany from "./pages/CryptoBotany";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/bio-narrative" element={<BioNarrative />} />
           <Route path="/ar-scanner" element={<ARScanner />} />
           <Route path="/craftsmanship" element={<Craftsmanship />} />
+          <Route path="/crypto-botany" element={<CryptoBotany />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
