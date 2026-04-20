@@ -205,7 +205,7 @@ const Farm = () => {
 
   const removePest = (plotId: number) => {
     setPlots((prev) => prev.map((p) => (p.id === plotId ? { ...p, hasPest: false, health: Math.min(100, p.health + 10) } : p)));
-    setResources((prev) => ({ ...prev, xp: prev.xp + 10 }));
+    update((s) => ({ ...s, xp: s.xp + 10, pestsRemoved: s.pestsRemoved + 1 }));
     updateQuest("pest");
     toast({ title: "🐛 Schädling entfernt!", description: "+10 XP" });
   };
@@ -233,7 +233,7 @@ const Farm = () => {
           : plot
       )
     );
-    setResources((prev) => ({ ...prev, coins: prev.coins - selectedPlant.cost, xp: prev.xp + 5 }));
+    update((s) => ({ ...s, coins: s.coins - selectedPlant.cost, xp: s.xp + 5, plantsGrown: s.plantsGrown + 1 }));
     updateQuest("plant");
     toast({ title: "Gepflanzt!", description: `${selectedPlant.name} wurde gepflanzt.` });
   };
@@ -243,14 +243,19 @@ const Farm = () => {
     if (!plot.plantType) return;
     const healthBonus = plot.health > 80 ? 1.5 : plot.health > 50 ? 1 : 0.5;
     const yield_amount = Math.ceil(plot.plantType.yield * healthBonus);
-    const coins = yield_amount * 4;
     const xp = yield_amount * 5;
+    const cropId = plot.plantType.id;
 
     setPlots((prev) => prev.map((p) => (p.id === plotId ? { ...p, stage: "empty", plantType: null, water: 0, sun: 0, health: 100, hasPest: false, plantedAt: null } : p)));
-    setResources((prev) => ({ ...prev, coins: prev.coins + coins, harvested: prev.harvested + yield_amount, xp: prev.xp + xp }));
+    update((s) => ({
+      ...s,
+      harvested: s.harvested + yield_amount,
+      xp: s.xp + xp,
+      inventory: { ...s.inventory, [cropId]: (s.inventory[cropId] ?? 0) + yield_amount },
+    }));
     setCompanionMood((m) => Math.min(100, m + 5));
     updateQuest("harvest");
-    toast({ title: "🎉 Geerntet!", description: `+${yield_amount} ${plot.plantType.name}, +${coins} Münzen, +${xp} XP` });
+    toast({ title: "🎉 Geerntet!", description: `+${yield_amount}× ${plot.plantType.name} ins Lager · Verkaufe im Markt!` });
   };
 
   const waterPlot = (plotId: number) => {
