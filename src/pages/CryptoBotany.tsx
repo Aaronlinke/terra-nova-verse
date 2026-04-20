@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Sparkles, Moon, Sun, Droplets, Flame, Wind, Mountain, FlaskConical, Star } from "lucide-react";
 import { toast } from "sonner";
+import { updateState } from "@/lib/gameStore";
 
 type Element = "sun" | "moon" | "water" | "fire" | "wind" | "earth";
 
@@ -130,6 +131,7 @@ const CryptoBotany = () => {
     setTimeout(() => {
       if (match) {
         toast.success(`✨ ${match.result.name} erschaffen!`, { description: match.result.power });
+        updateState((s) => ({ ...s, essencesBrewed: s.essencesBrewed + 1 }));
         if (!discoveries.includes(match.id)) {
           setDiscoveries([...discoveries, match.id]);
         }

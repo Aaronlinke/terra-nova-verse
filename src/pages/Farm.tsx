@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import { Sprout, Droplets, Sun, ArrowLeft, Cloud, CloudRain, Moon, Bug, Trophy, Target, Sparkles, Zap } from "lucide-react";
+import { Sprout, Droplets, Sun, ArrowLeft, Cloud, CloudRain, Moon, Trophy, Target, Sparkles, Zap, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { useGameState } from "@/hooks/useGameState";
 
 type GrowthStage = "empty" | "seed" | "sprout" | "growing" | "mature" | "harvest" | "withered";
 type Weather = "sunny" | "cloudy" | "rainy" | "stormy";
@@ -59,6 +60,8 @@ const xpForLevel = (lvl: number) => lvl * 100;
 
 const Farm = () => {
   const { toast } = useToast();
+  const { state, update } = useGameState();
+  const resources = { coins: state.coins, harvested: state.harvested, xp: state.xp, level: state.level };
   const [plots, setPlots] = useState<Plot[]>(() =>
     Array.from({ length: 12 }, (_, i) => ({
       id: i,
@@ -72,7 +75,6 @@ const Farm = () => {
     }))
   );
   const [selectedPlant, setSelectedPlant] = useState<PlantType | null>(null);
-  const [resources, setResources] = useState({ coins: 50, harvested: 0, xp: 0, level: 1 });
   const [weather, setWeather] = useState<Weather>("sunny");
   const [dayPhase, setDayPhase] = useState<DayPhase>("day");
   const [companionMood, setCompanionMood] = useState(80);
@@ -96,7 +98,7 @@ const Farm = () => {
     const quest = quests.find((q) => q.id === questId);
     if (!quest || quest.progress < quest.target || quest.done) return;
     setQuests((prev) => prev.map((q) => (q.id === questId ? { ...q, done: true } : q)));
-    setResources((prev) => ({ ...prev, coins: prev.coins + quest.reward, xp: prev.xp + 20 }));
+    update((s) => ({ ...s, coins: s.coins + quest.reward, xp: s.xp + 20, questsDone: s.questsDone + 1 }));
     toast({ title: "Quest abgeschlossen!", description: `+${quest.reward} Münzen, +20 XP` });
   };
 
@@ -117,10 +119,10 @@ const Farm = () => {
   useEffect(() => {
     const required = xpForLevel(resources.level);
     if (resources.xp >= required) {
-      setResources((prev) => ({ ...prev, level: prev.level + 1, xp: prev.xp - required, coins: prev.coins + 50 }));
+      update((s) => ({ ...s, level: s.level + 1, xp: s.xp - xpForLevel(s.level), coins: s.coins + 50 }));
       toast({ title: "🎉 Level Up!", description: `Du bist jetzt Level ${resources.level + 1}! +50 Münzen Bonus` });
     }
-  }, [resources.xp, resources.level, toast]);
+  }, [resources.xp, resources.level, toast, update]);
 
   // Main game tick
   useEffect(() => {
@@ -203,7 +205,7 @@ const Farm = () => {
 
   const removePest = (plotId: number) => {
     setPlots((prev) => prev.map((p) => (p.id === plotId ? { ...p, hasPest: false, health: Math.min(100, p.health + 10) } : p)));
-    setResources((prev) => ({ ...prev, xp: prev.xp + 10 }));
+    update((s) => ({ ...s, xp: s.xp + 10, pestsRemoved: s.pestsRemoved + 1 }));
     updateQuest("pest");
     toast({ title: "🐛 Schädling entfernt!", description: "+10 XP" });
   };
@@ -231,7 +233,7 @@ const Farm = () => {
           : plot
       )
     );
-    setResources((prev) => ({ ...prev, coins: prev.coins - selectedPlant.cost, xp: prev.xp + 5 }));
+    update((s) => ({ ...s, coins: s.coins - selectedPlant.cost, xp: s.xp + 5, plantsGrown: s.plantsGrown + 1 }));
     updateQuest("plant");
     toast({ title: "Gepflanzt!", description: `${selectedPlant.name} wurde gepflanzt.` });
   };
@@ -241,14 +243,19 @@ const Farm = () => {
     if (!plot.plantType) return;
     const healthBonus = plot.health > 80 ? 1.5 : plot.health > 50 ? 1 : 0.5;
     const yield_amount = Math.ceil(plot.plantType.yield * healthBonus);
-    const coins = yield_amount * 4;
     const xp = yield_amount * 5;
+    const cropId = plot.plantType.id;
 
     setPlots((prev) => prev.map((p) => (p.id === plotId ? { ...p, stage: "empty", plantType: null, water: 0, sun: 0, health: 100, hasPest: false, plantedAt: null } : p)));
-    setResources((prev) => ({ ...prev, coins: prev.coins + coins, harvested: prev.harvested + yield_amount, xp: prev.xp + xp }));
+    update((s) => ({
+      ...s,
+      harvested: s.harvested + yield_amount,
+      xp: s.xp + xp,
+      inventory: { ...s.inventory, [cropId]: (s.inventory[cropId] ?? 0) + yield_amount },
+    }));
     setCompanionMood((m) => Math.min(100, m + 5));
     updateQuest("harvest");
-    toast({ title: "🎉 Geerntet!", description: `+${yield_amount} ${plot.plantType.name}, +${coins} Münzen, +${xp} XP` });
+    toast({ title: "🎉 Geerntet!", description: `+${yield_amount}× ${plot.plantType.name} ins Lager · Verkaufe im Markt!` });
   };
 
   const waterPlot = (plotId: number) => {
@@ -265,7 +272,7 @@ const Farm = () => {
       toast({ title: "Zu wenig Münzen", description: "10 Münzen nötig", variant: "destructive" });
       return;
     }
-    setResources((prev) => ({ ...prev, coins: prev.coins - 10 }));
+    update((s) => ({ ...s, coins: s.coins - 10 }));
     setCompanionMood(100);
     toast({ title: "🐝 Bizzy ist glücklich!", description: "Companion gefüttert" });
   };
@@ -297,12 +304,20 @@ const Farm = () => {
     <div className={`min-h-screen bg-gradient-to-br ${bgClass} transition-colors duration-1000`}>
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <Link to="/">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Zurück
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link to="/">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Zurück
+              </Button>
+            </Link>
+            <Link to="/market">
+              <Button variant="outline" size="sm">
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Markt
+              </Button>
+            </Link>
+          </div>
           <div className="flex gap-2 flex-wrap">
             <Card className="bg-card/80 backdrop-blur">
               <CardContent className="py-2 px-4 flex items-center gap-2">

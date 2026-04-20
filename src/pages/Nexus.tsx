@@ -18,7 +18,11 @@ import {
   Moon,
   Zap,
   TrendingUp,
+  Trophy,
+  ShoppingCart,
 } from "lucide-react";
+import { useGameState } from "@/hooks/useGameState";
+import { achievements, rarityClass } from "@/lib/achievements";
 
 type Module = {
   id: string;
@@ -47,6 +51,11 @@ const Nexus = () => {
   const [pulse, setPulse] = useState(0);
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const [resonance, setResonance] = useState(0);
+  const { state } = useGameState();
+  const recentAchievements = state.achievements
+    .slice(-3)
+    .map((id) => achievements.find((a) => a.id === id))
+    .filter(Boolean);
 
   useEffect(() => {
     const interval = setInterval(() => setPulse((p) => (p + 1) % 360), 50);
@@ -74,17 +83,31 @@ const Nexus = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 overflow-hidden">
       <div className="container px-4 py-6 mx-auto max-w-6xl">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
           <Link to="/">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Zurück
             </Button>
           </Link>
-          <Badge variant="secondary" className="gap-1">
-            <Zap className="w-3 h-3" />
-            {totalEnergy} Gaia-Energie
-          </Badge>
+          <div className="flex gap-2 flex-wrap">
+            <Link to="/market">
+              <Button variant="outline" size="sm">
+                <ShoppingCart className="w-3 h-3 mr-1" />
+                Markt
+              </Button>
+            </Link>
+            <Link to="/achievements">
+              <Button variant="outline" size="sm">
+                <Trophy className="w-3 h-3 mr-1" />
+                {state.achievements.length}/{achievements.length}
+              </Button>
+            </Link>
+            <Badge variant="secondary" className="gap-1">
+              <Zap className="w-3 h-3" />
+              {totalEnergy}
+            </Badge>
+          </div>
         </div>
 
         <div className="text-center mb-10">
@@ -254,6 +277,35 @@ const Nexus = () => {
             <div className="text-xs text-muted-foreground">Verbindungen</div>
           </Card>
         </div>
+
+        {/* Achievement-Vitrine */}
+        <Card className="mt-6 p-5 max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-yellow-500" />
+              <h3 className="font-bold">Errungenschaften</h3>
+              <Badge variant="outline">{state.achievements.length} / {achievements.length}</Badge>
+            </div>
+            <Link to="/achievements">
+              <Button size="sm" variant="ghost">Alle ansehen →</Button>
+            </Link>
+          </div>
+          <Progress value={(state.achievements.length / achievements.length) * 100} className="h-2 mb-4" />
+          {recentAchievements.length > 0 ? (
+            <div className="grid grid-cols-3 gap-2">
+              {recentAchievements.map((a) => a && (
+                <div key={a.id} className={`relative overflow-hidden rounded-lg p-3 text-center bg-gradient-to-br ${rarityClass[a.rarity]}`}>
+                  <div className="text-3xl mb-1">{a.icon}</div>
+                  <div className="text-xs font-semibold text-white drop-shadow truncate">{a.title}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground text-center py-4">
+              Noch keine Achievements freigeschaltet. Spiele die Module und sammle deine ersten Badges!
+            </p>
+          )}
+        </Card>
 
         <div className="text-center mt-8 text-xs text-muted-foreground">
           Tippe auf einen Knoten, um das jeweilige Modul zu öffnen.

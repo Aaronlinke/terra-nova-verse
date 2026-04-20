@@ -14,6 +14,8 @@ import ARScanner from "./pages/ARScanner";
 import Craftsmanship from "./pages/Craftsmanship";
 import CryptoBotany from "./pages/CryptoBotany";
 import Nexus from "./pages/Nexus";
+import Market from "./pages/Market";
+import Achievements from "./pages/Achievements";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/craftsmanship" element={<Craftsmanship />} />
           <Route path="/crypto-botany" element={<CryptoBotany />} />
           <Route path="/nexus" element={<Nexus />} />
+          <Route path="/market" element={<Market />} />
+          <Route path="/achievements" element={<Achievements />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

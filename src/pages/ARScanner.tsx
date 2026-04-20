@@ -17,6 +17,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { updateState } from "@/lib/gameStore";
 
 type PlantData = {
   id: string;
@@ -178,10 +179,12 @@ const ARScanner = () => {
           setScanning(false);
           if (!discovered.has(plant.id)) {
             setDiscovered((d) => new Set(d).add(plant.id));
+            updateState((s) => ({ ...s, arScans: s.arScans + 1 }));
             toast.success(`Neu entdeckt: ${plant.name}!`, {
               description: "+1 zu deiner Bio-Sammlung",
             });
           } else {
+            updateState((s) => ({ ...s, arScans: s.arScans + 1 }));
             toast(`${plant.name} erneut gescannt`);
           }
           return 100;
