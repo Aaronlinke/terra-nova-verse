@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import { Sprout, Droplets, Sun, ArrowLeft, Cloud, CloudRain, Moon, Bug, Trophy, Target, Sparkles, Zap } from "lucide-react";
+import { Sprout, Droplets, Sun, ArrowLeft, Cloud, CloudRain, Moon, Trophy, Target, Sparkles, Zap, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { useGameState } from "@/hooks/useGameState";
 
 type GrowthStage = "empty" | "seed" | "sprout" | "growing" | "mature" | "harvest" | "withered";
 type Weather = "sunny" | "cloudy" | "rainy" | "stormy";
