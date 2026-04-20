@@ -20,6 +20,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
+import { updateState } from "@/lib/gameStore";
 
 type Step = {
   title: string;
@@ -349,6 +350,7 @@ const Craftsmanship = () => {
       return;
     }
     setCompleted((c) => new Set(c).add(craft.id));
+    updateState((s) => ({ ...s, craftsCompleted: s.craftsCompleted + 1 }));
     toast.success("Handwerk gemeistert!", { description: craft.reward });
     setSelected(null);
   };
