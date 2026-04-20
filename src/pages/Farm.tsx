@@ -304,12 +304,20 @@ const Farm = () => {
     <div className={`min-h-screen bg-gradient-to-br ${bgClass} transition-colors duration-1000`}>
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <Link to="/">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Zurück
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link to="/">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Zurück
+              </Button>
+            </Link>
+            <Link to="/market">
+              <Button variant="outline" size="sm">
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Markt
+              </Button>
+            </Link>
+          </div>
           <div className="flex gap-2 flex-wrap">
             <Card className="bg-card/80 backdrop-blur">
               <CardContent className="py-2 px-4 flex items-center gap-2">
