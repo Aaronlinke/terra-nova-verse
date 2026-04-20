@@ -272,7 +272,7 @@ const Farm = () => {
       toast({ title: "Zu wenig Münzen", description: "10 Münzen nötig", variant: "destructive" });
       return;
     }
-    setResources((prev) => ({ ...prev, coins: prev.coins - 10 }));
+    update((s) => ({ ...s, coins: s.coins - 10 }));
     setCompanionMood(100);
     toast({ title: "🐝 Bizzy ist glücklich!", description: "Companion gefüttert" });
   };
