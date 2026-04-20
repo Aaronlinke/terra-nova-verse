@@ -278,6 +278,35 @@ const Nexus = () => {
           </Card>
         </div>
 
+        {/* Achievement-Vitrine */}
+        <Card className="mt-6 p-5 max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-yellow-500" />
+              <h3 className="font-bold">Errungenschaften</h3>
+              <Badge variant="outline">{state.achievements.length} / {achievements.length}</Badge>
+            </div>
+            <Link to="/achievements">
+              <Button size="sm" variant="ghost">Alle ansehen →</Button>
+            </Link>
+          </div>
+          <Progress value={(state.achievements.length / achievements.length) * 100} className="h-2 mb-4" />
+          {recentAchievements.length > 0 ? (
+            <div className="grid grid-cols-3 gap-2">
+              {recentAchievements.map((a) => a && (
+                <div key={a.id} className={`relative overflow-hidden rounded-lg p-3 text-center bg-gradient-to-br ${rarityClass[a.rarity]}`}>
+                  <div className="text-3xl mb-1">{a.icon}</div>
+                  <div className="text-xs font-semibold text-white drop-shadow truncate">{a.title}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground text-center py-4">
+              Noch keine Achievements freigeschaltet. Spiele die Module und sammle deine ersten Badges!
+            </p>
+          )}
+        </Card>
+
         <div className="text-center mt-8 text-xs text-muted-foreground">
           Tippe auf einen Knoten, um das jeweilige Modul zu öffnen.
         </div>
