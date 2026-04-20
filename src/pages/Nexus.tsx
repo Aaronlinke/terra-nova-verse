@@ -18,7 +18,11 @@ import {
   Moon,
   Zap,
   TrendingUp,
+  Trophy,
+  ShoppingCart,
 } from "lucide-react";
+import { useGameState } from "@/hooks/useGameState";
+import { achievements, rarityClass } from "@/lib/achievements";
 
 type Module = {
   id: string;
