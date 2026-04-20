@@ -124,20 +124,33 @@ const ARScanner = () => {
 
   const startCamera = async () => {
     setError(null);
+    setCameraOn(true); // sofort aktivieren – Demo-Modus läuft auch ohne Kamera
+
+    // Kamera-API überhaupt verfügbar?
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setError("Demo-Modus aktiv – Kamera-API in dieser Umgebung nicht verfügbar.");
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
+        video: { facingMode: { ideal: "environment" } },
         audio: false,
       });
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        videoRef.current.play().catch(() => {});
       }
-      setCameraOn(true);
-    } catch (e) {
-      setError("Kamera nicht verfügbar. Du kannst trotzdem Demo-Pflanzen scannen.");
-      setCameraOn(true); // Demo-Modus aktivieren
+    } catch (e: any) {
+      const name = e?.name || "";
+      if (name === "NotAllowedError") {
+        setError("Kamera-Zugriff blockiert. Demo-Modus aktiv – Scans funktionieren trotzdem.");
+      } else if (name === "NotFoundError") {
+        setError("Keine Kamera gefunden. Demo-Modus aktiv.");
+      } else {
+        setError("Kamera nicht verfügbar (Preview-Sandbox). Demo-Modus aktiv – einfach scannen!");
+      }
     }
   };
 
