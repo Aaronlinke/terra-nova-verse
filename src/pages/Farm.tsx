@@ -98,7 +98,7 @@ const Farm = () => {
     const quest = quests.find((q) => q.id === questId);
     if (!quest || quest.progress < quest.target || quest.done) return;
     setQuests((prev) => prev.map((q) => (q.id === questId ? { ...q, done: true } : q)));
-    setResources((prev) => ({ ...prev, coins: prev.coins + quest.reward, xp: prev.xp + 20 }));
+    update((s) => ({ ...s, coins: s.coins + quest.reward, xp: s.xp + 20, questsDone: s.questsDone + 1 }));
     toast({ title: "Quest abgeschlossen!", description: `+${quest.reward} Münzen, +20 XP` });
   };
 
@@ -119,10 +119,10 @@ const Farm = () => {
   useEffect(() => {
     const required = xpForLevel(resources.level);
     if (resources.xp >= required) {
-      setResources((prev) => ({ ...prev, level: prev.level + 1, xp: prev.xp - required, coins: prev.coins + 50 }));
+      update((s) => ({ ...s, level: s.level + 1, xp: s.xp - xpForLevel(s.level), coins: s.coins + 50 }));
       toast({ title: "🎉 Level Up!", description: `Du bist jetzt Level ${resources.level + 1}! +50 Münzen Bonus` });
     }
-  }, [resources.xp, resources.level, toast]);
+  }, [resources.xp, resources.level, toast, update]);
 
   // Main game tick
   useEffect(() => {
