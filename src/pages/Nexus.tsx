@@ -51,6 +51,11 @@ const Nexus = () => {
   const [pulse, setPulse] = useState(0);
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const [resonance, setResonance] = useState(0);
+  const { state } = useGameState();
+  const recentAchievements = state.achievements
+    .slice(-3)
+    .map((id) => achievements.find((a) => a.id === id))
+    .filter(Boolean);
 
   useEffect(() => {
     const interval = setInterval(() => setPulse((p) => (p + 1) % 360), 50);
@@ -78,17 +83,31 @@ const Nexus = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 overflow-hidden">
       <div className="container px-4 py-6 mx-auto max-w-6xl">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
           <Link to="/">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Zurück
             </Button>
           </Link>
-          <Badge variant="secondary" className="gap-1">
-            <Zap className="w-3 h-3" />
-            {totalEnergy} Gaia-Energie
-          </Badge>
+          <div className="flex gap-2 flex-wrap">
+            <Link to="/market">
+              <Button variant="outline" size="sm">
+                <ShoppingCart className="w-3 h-3 mr-1" />
+                Markt
+              </Button>
+            </Link>
+            <Link to="/achievements">
+              <Button variant="outline" size="sm">
+                <Trophy className="w-3 h-3 mr-1" />
+                {state.achievements.length}/{achievements.length}
+              </Button>
+            </Link>
+            <Badge variant="secondary" className="gap-1">
+              <Zap className="w-3 h-3" />
+              {totalEnergy}
+            </Badge>
+          </div>
         </div>
 
         <div className="text-center mb-10">
