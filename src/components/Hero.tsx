@@ -24,8 +24,15 @@ const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
+          <Link to="/nexus">
+            <Button size="lg" className="group bg-gradient-to-r from-primary via-accent to-primary">
+              <Sparkles className="mr-2 w-4 h-4" />
+              Nexus – Die Fusion
+              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
           <Link to="/farm">
-            <Button size="lg" className="group">
+            <Button size="lg" variant="outline" className="group">
               Interaktive Farm
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Button>

@@ -124,20 +124,33 @@ const ARScanner = () => {
 
   const startCamera = async () => {
     setError(null);
+    setCameraOn(true); // sofort aktivieren – Demo-Modus läuft auch ohne Kamera
+
+    // Kamera-API überhaupt verfügbar?
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setError("Demo-Modus aktiv – Kamera-API in dieser Umgebung nicht verfügbar.");
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
+        video: { facingMode: { ideal: "environment" } },
         audio: false,
       });
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        videoRef.current.play().catch(() => {});
       }
-      setCameraOn(true);
-    } catch (e) {
-      setError("Kamera nicht verfügbar. Du kannst trotzdem Demo-Pflanzen scannen.");
-      setCameraOn(true); // Demo-Modus aktivieren
+    } catch (e: any) {
+      const name = e?.name || "";
+      if (name === "NotAllowedError") {
+        setError("Kamera-Zugriff blockiert. Demo-Modus aktiv – Scans funktionieren trotzdem.");
+      } else if (name === "NotFoundError") {
+        setError("Keine Kamera gefunden. Demo-Modus aktiv.");
+      } else {
+        setError("Kamera nicht verfügbar (Preview-Sandbox). Demo-Modus aktiv – einfach scannen!");
+      }
     }
   };
 
@@ -223,11 +236,30 @@ const ARScanner = () => {
                   muted
                 />
                 {!streamRef.current && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
-                    <div className="text-center">
-                      <Leaf className="w-20 h-20 mx-auto mb-2 text-primary animate-pulse" />
-                      <p className="text-sm text-muted-foreground">Demo-Modus</p>
+                  <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-primary/30 via-accent/20 to-primary/30">
+                    {/* animierte Natur-Szene */}
+                    <div className="absolute inset-0 opacity-60 bg-[radial-gradient(circle_at_20%_30%,hsl(var(--primary)/0.5),transparent_40%),radial-gradient(circle_at_80%_70%,hsl(var(--accent)/0.5),transparent_40%)] animate-pulse" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-7xl mb-3 animate-bounce" style={{ animationDuration: "3s" }}>🌿</div>
+                        <div className="inline-block px-3 py-1 rounded-full bg-background/70 backdrop-blur text-xs font-medium">
+                          Demo-Modus aktiv
+                        </div>
+                      </div>
                     </div>
+                    {/* schwebende Partikel */}
+                    {[...Array(8)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-1.5 h-1.5 rounded-full bg-primary/60 animate-pulse"
+                        style={{
+                          left: `${(i * 13 + 10) % 90}%`,
+                          top: `${(i * 17 + 15) % 80}%`,
+                          animationDelay: `${i * 0.3}s`,
+                          animationDuration: `${2 + (i % 3)}s`,
+                        }}
+                      />
+                    ))}
                   </div>
                 )}
 
