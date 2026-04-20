@@ -60,6 +60,8 @@ const xpForLevel = (lvl: number) => lvl * 100;
 
 const Farm = () => {
   const { toast } = useToast();
+  const { state, update } = useGameState();
+  const resources = { coins: state.coins, harvested: state.harvested, xp: state.xp, level: state.level };
   const [plots, setPlots] = useState<Plot[]>(() =>
     Array.from({ length: 12 }, (_, i) => ({
       id: i,
@@ -73,7 +75,6 @@ const Farm = () => {
     }))
   );
   const [selectedPlant, setSelectedPlant] = useState<PlantType | null>(null);
-  const [resources, setResources] = useState({ coins: 50, harvested: 0, xp: 0, level: 1 });
   const [weather, setWeather] = useState<Weather>("sunny");
   const [dayPhase, setDayPhase] = useState<DayPhase>("day");
   const [companionMood, setCompanionMood] = useState(80);
