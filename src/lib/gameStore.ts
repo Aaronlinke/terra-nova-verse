@@ -1,84 +1,37 @@
-// Lightweight global game store using localStorage + custom events.
-// No backend yet - persists per browser. Easy to swap for Cloud later.
+// Backwards-compatible façade over the new sliced store.
+// Existing imports (loadState, saveState, updateState, subscribeState, GameState, Inventory, DecorId)
+// continue to work unchanged. New code should prefer src/lib/state/*.
 
-export type Inventory = Record<string, number>; // plantId -> count
-export type DecorId = "scarecrow" | "fountain" | "gnome" | "windmill" | "rainbow" | "shrine";
+import {
+  getFlat,
+  getRoot,
+  patchFlat,
+  subscribe,
+  EVENT_NAME as NEW_EVENT_NAME,
+} from "./state/store";
+import { flatten, type GameState as RootFlat, type DecorId, type Inventory } from "./state/types";
 
-export interface GameState {
-  coins: number;
-  xp: number;
-  level: number;
-  harvested: number;
-  inventory: Inventory;
-  decor: DecorId[];
-  totalEarned: number;
-  achievements: string[]; // unlocked ids
-  // Cross-feature counters (incremented from each module)
-  arScans: number;
-  craftsCompleted: number;
-  essencesBrewed: number;
-  plantsGrown: number;
-  pestsRemoved: number;
-  questsDone: number;
-}
-
-const KEY = "gaia-game-state-v1";
-const EVENT = "gaia-state-change";
-
-const defaultState: GameState = {
-  coins: 50,
-  xp: 0,
-  level: 1,
-  harvested: 0,
-  inventory: {},
-  decor: [],
-  totalEarned: 0,
-  achievements: [],
-  arScans: 0,
-  craftsCompleted: 0,
-  essencesBrewed: 0,
-  plantsGrown: 0,
-  pestsRemoved: 0,
-  questsDone: 0,
-};
+export type { DecorId, Inventory };
+export type GameState = RootFlat;
 
 export function loadState(): GameState {
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return { ...defaultState };
-    return { ...defaultState, ...JSON.parse(raw) };
-  } catch {
-    return { ...defaultState };
-  }
+  return getFlat();
 }
 
-export function saveState(state: GameState) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(state));
-    window.dispatchEvent(new CustomEvent(EVENT, { detail: state }));
-  } catch {
-    // ignore
-  }
+export function saveState(state: GameState): void {
+  patchFlat(() => state);
 }
 
 export function updateState(updater: (s: GameState) => GameState): GameState {
-  const next = updater(loadState());
-  saveState(next);
-  return next;
+  patchFlat(updater);
+  return getFlat();
 }
 
 export function subscribeState(cb: (s: GameState) => void): () => void {
-  const handler = (e: Event) => cb((e as CustomEvent<GameState>).detail);
-  window.addEventListener(EVENT, handler);
-  // Cross-tab sync
-  const storageHandler = (e: StorageEvent) => {
-    if (e.key === KEY) cb(loadState());
-  };
-  window.addEventListener("storage", storageHandler);
-  return () => {
-    window.removeEventListener(EVENT, handler);
-    window.removeEventListener("storage", storageHandler);
-  };
+  return subscribe((root) => cb(flatten(root)));
 }
 
-export const EVENT_NAME = EVENT;
+export const EVENT_NAME = NEW_EVENT_NAME;
+
+// Re-export root accessor for power users / new code.
+export { getRoot };
