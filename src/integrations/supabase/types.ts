@@ -14,7 +14,138 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      game_state: {
+        Row: {
+          ar_scans: number
+          coins: number
+          crafts_completed: number
+          created_at: string
+          essences_brewed: number
+          harvested: number
+          level: number
+          pests_removed: number
+          plants_grown: number
+          quests_done: number
+          total_earned: number
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          ar_scans?: number
+          coins?: number
+          crafts_completed?: number
+          created_at?: string
+          essences_brewed?: number
+          harvested?: number
+          level?: number
+          pests_removed?: number
+          plants_grown?: number
+          quests_done?: number
+          total_earned?: number
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          ar_scans?: number
+          coins?: number
+          crafts_completed?: number
+          created_at?: string
+          essences_brewed?: number
+          harvested?: number
+          level?: number
+          pests_removed?: number
+          plants_grown?: number
+          quests_done?: number
+          total_earned?: number
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
+      inventory: {
+        Row: {
+          acquired_at: string
+          id: string
+          item_id: string
+          item_type: Database["public"]["Enums"]["inventory_item_type"]
+          quantity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          id?: string
+          item_id: string
+          item_type: Database["public"]["Enums"]["inventory_item_type"]
+          quantity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          id?: string
+          item_id?: string
+          item_type?: Database["public"]["Enums"]["inventory_item_type"]
+          quantity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +154,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      inventory_item_type: "crop" | "decor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +281,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      inventory_item_type: ["crop", "decor"],
+    },
   },
 } as const
