@@ -17,16 +17,20 @@ export type GameEventMap = {
 type Handler<K extends keyof GameEventMap> = (payload: GameEventMap[K]) => void;
 
 class EventBus {
-  private listeners: { [K in keyof GameEventMap]?: Set<Handler<K>> } = {};
+  private listeners: Map<keyof GameEventMap, Set<Handler<keyof GameEventMap>>> = new Map();
 
   on<K extends keyof GameEventMap>(event: K, handler: Handler<K>): () => void {
-    const set = (this.listeners[event] ??= new Set()) as Set<Handler<K>>;
-    set.add(handler);
-    return () => set.delete(handler);
+    let set = this.listeners.get(event);
+    if (!set) {
+      set = new Set();
+      this.listeners.set(event, set);
+    }
+    set.add(handler as Handler<keyof GameEventMap>);
+    return () => set!.delete(handler as Handler<keyof GameEventMap>);
   }
 
   emit<K extends keyof GameEventMap>(event: K, payload: GameEventMap[K]): void {
-    const set = this.listeners[event] as Set<Handler<K>> | undefined;
+    const set = this.listeners.get(event) as Set<Handler<K>> | undefined;
     if (!set) return;
     set.forEach((h) => {
       try {
