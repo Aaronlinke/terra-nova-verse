@@ -384,82 +384,37 @@ const Farm = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 space-y-4">
-            <Card>
+            <Card className="overflow-hidden">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
                     <CardTitle>Farmfelder</CardTitle>
-                    <CardDescription className="text-xs">Pflanzen · Pflegen · Schädlinge bekämpfen · Ernten</CardDescription>
+                    <CardDescription className="text-xs">Tippe ein Feld zum Pflanzen / Pflegen / Ernten</CardDescription>
                   </div>
-                  <div className="flex gap-2 text-xs">
+                  <div className="flex gap-2 text-xs items-center flex-wrap">
+                    <ComboBadge combo={state.comboStreak} />
                     <Badge variant="secondary">🌾 {resources.harvested}</Badge>
                     <Badge variant="outline">⭐ {resources.xp} XP</Badge>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-                  {plots.map((plot) => (
-                    <div key={plot.id} className="relative">
-                      <button
-                        onClick={() => handlePlotClick(plot.id)}
-                        className={`w-full aspect-square rounded-lg border-2 transition-all duration-300 relative overflow-hidden ${
-                          plot.stage === "empty"
-                            ? "border-dashed border-border bg-muted/20 hover:bg-muted/40"
-                            : plot.stage === "harvest"
-                            ? "border-accent bg-accent/10 hover:bg-accent/20 animate-pulse"
-                            : plot.stage === "withered"
-                            ? "border-destructive/50 bg-destructive/10"
-                            : plot.hasPest
-                            ? "border-orange-500 bg-orange-500/10 animate-pulse"
-                            : "border-primary/50 bg-card hover:shadow-lg"
-                        } flex flex-col items-center justify-center text-3xl md:text-4xl cursor-pointer`}
-                      >
-                        {weather === "rainy" && plot.stage !== "empty" && (
-                          <div className="absolute inset-0 pointer-events-none opacity-30">
-                            <div className="absolute top-0 left-1/4 w-0.5 h-2 bg-blue-400 animate-pulse" />
-                            <div className="absolute top-0 right-1/3 w-0.5 h-2 bg-blue-400 animate-pulse" style={{ animationDelay: "0.3s" }} />
-                          </div>
-                        )}
-                        {getPlotEmoji(plot)}
-                        {plot.stage !== "empty" && plot.stage !== "harvest" && plot.stage !== "withered" && (
-                          <div className="absolute bottom-1 left-1 right-1 flex gap-1">
-                            <button
-                              onClick={(e) => { e.stopPropagation(); waterPlot(plot.id); }}
-                              className="flex-1 bg-primary/20 hover:bg-primary/40 rounded p-1"
-                            >
-                              <Droplets className="h-3 w-3 text-primary mx-auto" />
-                            </button>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); sunPlot(plot.id); }}
-                              className="flex-1 bg-accent/20 hover:bg-accent/40 rounded p-1"
-                            >
-                              <Sun className="h-3 w-3 text-accent mx-auto" />
-                            </button>
-                          </div>
-                        )}
-                      </button>
-                      {plot.stage !== "empty" && plot.plantType && (
-                        <div className="mt-1 space-y-0.5">
-                          <div className="flex gap-1">
-                            <div className="flex-1 h-1 bg-muted rounded overflow-hidden">
-                              <div className="h-full bg-primary transition-all" style={{ width: `${plot.water}%` }} />
-                            </div>
-                            <div className="flex-1 h-1 bg-muted rounded overflow-hidden">
-                              <div className="h-full bg-accent transition-all" style={{ width: `${plot.sun}%` }} />
-                            </div>
-                          </div>
-                          <div className="h-1 bg-muted rounded overflow-hidden">
-                            <div
-                              className={`h-full transition-all ${plot.health > 60 ? "bg-green-500" : plot.health > 30 ? "bg-yellow-500" : "bg-destructive"}`}
-                              style={{ width: `${plot.health}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                <FarmScene
+                  plots={plots.slice(0, 12)}
+                  weather={weather}
+                  dayPhase={dayPhase}
+                  decor={state.decor}
+                  decorPlacements={state.decorPlacements ?? {}}
+                  bursts={bursts}
+                  onTileClick={handlePlotClick}
+                  onWater={waterPlot}
+                  onSun={sunPlot}
+                  onCompanionTap={() => {
+                    setCompanionMood((m) => Math.min(100, m + 5));
+                    update((s) => ({ ...s, xp: s.xp + 1 }));
+                    spawnBurst("💚 +1 XP", "#7be584");
+                  }}
+                />
               </CardContent>
             </Card>
 
