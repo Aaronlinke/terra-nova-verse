@@ -18,6 +18,9 @@ export function validateFlat(s: GameState): GameState {
       if (c > 0) inv[k] = c;
     }
   }
+  const placements = (s.decorPlacements && typeof s.decorPlacements === "object")
+    ? s.decorPlacements
+    : {};
   return {
     coins: clampInt(s.coins),
     xp: clampInt(s.xp),
@@ -26,6 +29,8 @@ export function validateFlat(s: GameState): GameState {
     harvested: clampInt(s.harvested),
     inventory: inv,
     decor: Array.isArray(s.decor) ? Array.from(new Set(s.decor)) : [],
+    decorPlacements: placements,
+    comboStreak: clampInt(s.comboStreak),
     plantsGrown: clampInt(s.plantsGrown),
     pestsRemoved: clampInt(s.pestsRemoved),
     achievements: Array.isArray(s.achievements) ? Array.from(new Set(s.achievements)) : [],
@@ -53,6 +58,10 @@ export function validateRoot(r: RootState): RootState {
         inventory: r.farm.inventory,
       } as GameState).inventory,
       decor: Array.isArray(r.farm.decor) ? Array.from(new Set(r.farm.decor)) : [],
+      decorPlacements: (r.farm.decorPlacements && typeof r.farm.decorPlacements === "object")
+        ? r.farm.decorPlacements
+        : {},
+      comboStreak: clampInt(r.farm.comboStreak),
       plantsGrown: clampInt(r.farm.plantsGrown),
       pestsRemoved: clampInt(r.farm.pestsRemoved),
     },

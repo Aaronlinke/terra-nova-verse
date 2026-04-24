@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useGameState } from "@/hooks/useGameState";
 import { achievements, rarityClass } from "@/lib/achievements";
+import DailyLoginCard from "@/components/nexus/DailyLoginCard";
 
 type Module = {
   id: string;
@@ -122,6 +123,8 @@ const Nexus = () => {
             Alle 9 Module verschmelzen zu einem lebendigen Organismus. Beobachte die Resonanz, spüre den Puls.
           </p>
         </div>
+
+        <DailyLoginCard />
 
         {/* Zentrales Mandala */}
         <div className="relative aspect-square max-w-2xl mx-auto mb-10">

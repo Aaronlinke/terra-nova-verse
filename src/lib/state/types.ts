@@ -10,10 +10,14 @@ export interface PlayerState {
   totalEarned: number;
 }
 
+export interface DecorPlacement { x: number; y: number; }
+
 export interface FarmState {
   harvested: number;
   inventory: Inventory;
   decor: DecorId[];
+  decorPlacements: Partial<Record<DecorId, DecorPlacement>>;
+  comboStreak: number;
   plantsGrown: number;
   pestsRemoved: number;
 }
@@ -46,7 +50,7 @@ export interface GameState
 
 export const defaultRoot: RootState = {
   player: { coins: 50, xp: 0, level: 1, totalEarned: 0 },
-  farm: { harvested: 0, inventory: {}, decor: [], plantsGrown: 0, pestsRemoved: 0 },
+  farm: { harvested: 0, inventory: {}, decor: [], decorPlacements: {}, comboStreak: 0, plantsGrown: 0, pestsRemoved: 0 },
   meta: {
     achievements: [],
     questsDone: 0,
@@ -79,6 +83,8 @@ export function lift(prev: RootState, flat: GameState): RootState {
       harvested: flat.harvested,
       inventory: flat.inventory,
       decor: flat.decor,
+      decorPlacements: flat.decorPlacements ?? {},
+      comboStreak: flat.comboStreak ?? 0,
       plantsGrown: flat.plantsGrown,
       pestsRemoved: flat.pestsRemoved,
     },

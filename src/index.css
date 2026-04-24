@@ -113,3 +113,75 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* === Farm Game Animations === */
+@layer utilities {
+  @keyframes sway {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+  }
+  @keyframes plant-pop {
+    0% { transform: translateY(8px) scale(0.6); opacity: 0; }
+    60% { transform: translateY(-4px) scale(1.1); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  @keyframes harvest-pulse {
+    0%, 100% { filter: drop-shadow(0 0 4px var(--glow, #ffd54f)); transform: translateY(0) scale(1); }
+    50% { filter: drop-shadow(0 0 14px var(--glow, #ffd54f)); transform: translateY(-3px) scale(1.06); }
+  }
+  @keyframes harvest-burst {
+    0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+    30% { transform: translate(-50%, -120%) scale(1.4); opacity: 1; }
+    100% { transform: translate(-50%, -200%) scale(1); opacity: 0; }
+  }
+  @keyframes confetti {
+    0% { transform: translate(0,0) rotate(0); opacity: 1; }
+    100% { transform: translate(var(--cx, 60px), var(--cy, -90px)) rotate(720deg); opacity: 0; }
+  }
+  @keyframes lightning {
+    0%, 92%, 100% { opacity: 0; }
+    93%, 95% { opacity: 0.85; }
+    94%, 96% { opacity: 0.2; }
+  }
+  @keyframes firefly {
+    0%, 100% { transform: translate(0,0); opacity: 0.2; }
+    50% { transform: translate(var(--fx, 20px), var(--fy, -30px)); opacity: 1; }
+  }
+  @keyframes pest-crawl {
+    0%, 100% { transform: translateX(-6px) rotate(-8deg); }
+    50% { transform: translateX(6px) rotate(8deg); }
+  }
+  @keyframes wither-shake {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+  }
+  @keyframes companion-walk {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  @keyframes coin-fly {
+    0% { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx, 0px), var(--ty, -200px)) scale(0.4); opacity: 0; }
+  }
+  @keyframes sun-orbit {
+    0% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(20px) translateY(-10px); }
+    100% { transform: translateX(0) translateY(0); }
+  }
+
+  .anim-sway { transform-origin: bottom center; animation: sway 4s ease-in-out infinite; }
+  .anim-pop { animation: plant-pop 0.4s ease-out; transform-origin: bottom center; }
+  .anim-harvest { animation: harvest-pulse 1.4s ease-in-out infinite; transform-origin: bottom center; }
+  .anim-pest { animation: pest-crawl 1.2s ease-in-out infinite; }
+  .anim-wither { animation: wither-shake 3s ease-in-out infinite; filter: grayscale(0.7) brightness(0.7); }
+  .anim-companion { animation: companion-walk 0.5s ease-in-out infinite; }
+
+  /* Isometric grid base tile */
+  .iso-tile {
+    width: 96px;
+    height: 56px;
+    transform-style: preserve-3d;
+  }
+}
+
