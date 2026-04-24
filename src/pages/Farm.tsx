@@ -93,10 +93,10 @@ const Farm = () => {
 
   const spawnBurst = useCallback((text: string, color: string) => {
     const id = ++burstIdRef.current;
-    // Position near scene center; randomize a bit
-    const x = 40 + Math.random() * 20;
-    const y = 35 + Math.random() * 20;
-    setBursts((b) => [...b, { id, x: x as unknown as number, y: y as unknown as number, text, color }]);
+    // Random pixel position roughly centered in scene (scene height = 480)
+    const x = 120 + Math.random() * 220;
+    const y = 180 + Math.random() * 120;
+    setBursts((b) => [...b, { id, x, y, text, color }]);
     setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1300);
   }, []);
 
