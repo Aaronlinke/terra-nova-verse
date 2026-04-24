@@ -88,6 +88,18 @@ const Farm = () => {
     { id: "q2", title: "Grüner Daumen", description: "Pflanze 5 Samen", target: 5, progress: 0, reward: 25, type: "plant", done: false },
     { id: "q3", title: "Schädlingsjäger", description: "Entferne 2 Schädlinge", target: 2, progress: 0, reward: 40, type: "pest", done: false },
   ]);
+  const [bursts, setBursts] = useState<BurstEvent[]>([]);
+  const burstIdRef = useRef(0);
+
+  const spawnBurst = useCallback((text: string, color: string) => {
+    const id = ++burstIdRef.current;
+    // Position near scene center; randomize a bit
+    const x = 40 + Math.random() * 20;
+    const y = 35 + Math.random() * 20;
+    setBursts((b) => [...b, { id, x: x as unknown as number, y: y as unknown as number, text, color }]);
+    setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1300);
+  }, []);
+
 
   const updateQuest = useCallback((type: Quest["type"], amount = 1) => {
     setQuests((prev) =>
