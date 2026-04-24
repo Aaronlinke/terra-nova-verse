@@ -83,6 +83,8 @@ export function lift(prev: RootState, flat: GameState): RootState {
       harvested: flat.harvested,
       inventory: flat.inventory,
       decor: flat.decor,
+      decorPlacements: flat.decorPlacements ?? {},
+      comboStreak: flat.comboStreak ?? 0,
       plantsGrown: flat.plantsGrown,
       pestsRemoved: flat.pestsRemoved,
     },
