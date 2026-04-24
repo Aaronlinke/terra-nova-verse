@@ -258,21 +258,36 @@ const Farm = () => {
   const harvestPlot = (plotId: number) => {
     const plot = plots[plotId];
     if (!plot.plantType) return;
-    const healthBonus = plot.health > 80 ? 1.5 : plot.health > 50 ? 1 : 0.5;
-    const yield_amount = Math.ceil(plot.plantType.yield * healthBonus);
-    const xp = yield_amount * 5;
+    const isPerfect = plot.health > 80;
+    const healthBonus = isPerfect ? 1.5 : plot.health > 50 ? 1 : 0.5;
     const cropId = plot.plantType.id;
 
     setPlots((prev) => prev.map((p) => (p.id === plotId ? { ...p, stage: "empty", plantType: null, water: 0, sun: 0, health: 100, hasPest: false, plantedAt: null } : p)));
-    update((s) => ({
-      ...s,
-      harvested: s.harvested + yield_amount,
-      xp: s.xp + xp,
-      inventory: { ...s.inventory, [cropId]: (s.inventory[cropId] ?? 0) + yield_amount },
-    }));
+
+    update((s) => {
+      const nextStreak = isPerfect ? s.comboStreak + 1 : 0;
+      const comboMult = BALANCE.comboMultiplier(nextStreak);
+      const yield_amount = Math.ceil(plot.plantType!.yield * healthBonus * comboMult);
+      const xpGain = yield_amount * 5;
+      // burst feedback
+      spawnBurst(`+${yield_amount} ${plot.plantType!.name}`, "#ffd54f");
+      if (comboMult > 1) {
+        setTimeout(() => spawnBurst(`Combo ×${comboMult}!`, "#ff6b35"), 200);
+      }
+      return {
+        ...s,
+        harvested: s.harvested + yield_amount,
+        xp: s.xp + xpGain,
+        comboStreak: nextStreak,
+        inventory: { ...s.inventory, [cropId]: (s.inventory[cropId] ?? 0) + yield_amount },
+      };
+    });
     setCompanionMood((m) => Math.min(100, m + 5));
     updateQuest("harvest");
-    toast({ title: "🎉 Geerntet!", description: `+${yield_amount}× ${plot.plantType.name} ins Lager · Verkaufe im Markt!` });
+    toast({
+      title: isPerfect ? "🌟 Perfekte Ernte!" : "🎉 Geerntet!",
+      description: `${plot.plantType.name} ins Lager · Verkaufe im Markt!`,
+    });
   };
 
   const waterPlot = (plotId: number) => {
