@@ -14,6 +14,7 @@ const KEY = "gaia-game-state-v1"; // unchanged for backward compat with existing
 const EVENT = "gaia-state-change";
 
 let current: RootState = load();
+let cachedFlat: GameState = flatten(current);
 
 function load(): RootState {
   try {
