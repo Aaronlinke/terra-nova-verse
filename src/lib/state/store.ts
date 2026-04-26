@@ -52,16 +52,18 @@ export function getRoot(): RootState {
 }
 
 export function getFlat(): GameState {
-  return flatten(current);
+  return cachedFlat;
 }
 
 export function setRoot(next: RootState) {
   current = validateRoot(next);
+  cachedFlat = flatten(current);
   persist();
 }
 
 export function patchRoot(updater: (r: RootState) => RootState) {
   current = validateRoot(updater(current));
+  cachedFlat = flatten(current);
   persist();
   return current;
 }
@@ -69,6 +71,7 @@ export function patchRoot(updater: (r: RootState) => RootState) {
 export function patchFlat(updater: (s: GameState) => GameState) {
   const nextFlat = updater(flatten(current));
   current = validateRoot(lift(current, nextFlat));
+  cachedFlat = flatten(current);
   persist();
   return current;
 }
