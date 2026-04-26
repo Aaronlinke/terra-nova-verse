@@ -83,6 +83,7 @@ export function subscribe(cb: (r: RootState) => void): () => void {
   const storageHandler = (e: StorageEvent) => {
     if (e.key === KEY) {
       current = load();
+      cachedFlat = flatten(current);
       cb(current);
     }
   };
