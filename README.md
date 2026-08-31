@@ -1,73 +1,87 @@
-# Welcome to your Lovable project
+# terra-nova-verse
 
-## Project info
+```javascript
+import React, { useState } from 'react';
 
-**URL**: https://lovable.dev/projects/5f7c8925-95f4-4575-87c7-9aad0be5e457
+const GaiaVerse = () => {
+    const [concepts, setConcepts] = useState([
+        {
+            title: "Dynamische Bio-Narrative",
+            description: "Die Geschichte und die Umwelt entwickeln sich dynamisch basierend auf den Entscheidungen der Spieler."
+        },
+        {
+            title: "Emotionale Landwirtschaft",
+            description: "Interaktion mit Pflanzen und Tieren auf emotionaler Ebene, die die Erträge beeinflusst."
+        },
+        {
+            title: "Genetische Manipulation",
+            description: "Experimentieren mit genetischer Manipulation, um neue Pflanzen und Tiere zu erschaffen."
+        },
+        {
+            title: "Simulierte Ökosysteme",
+            description: "Jede Farm bildet ein kleines, lebendiges Ökosystem, das in Echtzeit reagiert."
+        },
+        {
+            title: "Augmented Reality mit realen Auswirkungen",
+            description: "Virtuelle Aktionen fördern reale Umweltprojekte."
+        },
+        {
+            title: "Virtuelle Klima-Tourismus",
+            description: "Virtuelle Reisen zu klimatisch unterschiedlichen Farmen zur Wissensvermittlung."
+        },
+        {
+            title: "Interaktive Handwerkskunst",
+            description: "Spieler entwerfen Werkzeuge, die ihre Effizienz in der Landwirtschaft beeinflussen."
+        },
+        {
+            title: "KI-gesteuerte Bio-Mentoren",
+            description: "Individuelle Ratschläge zur Optimierung von Farmen durch KI-Technologie."
+        },
+        {
+            title: "Kryptobotanik und Alchemie",
+            description: "Erforschung mystischer Pflanzenkunde zur Schaffung einzigartiger Effekte."
+        }
+    ]);
 
-## How can I edit this code?
+    return (
+        <div className="p-5 max-w-3xl mx-auto">
+            <h1 className="text-3xl font-bold mb-4">Willkommen im GaiaVerse</h1>
+            <p className="mb-6">Das interaktive Metaversum der regenerativen Landwirtschaft, wo Ihre Entscheidungen nachhaltige Auswirkungen haben.</p>
 
-There are several ways of editing your application.
+            <ul className="space-y-4">
+                {concepts.map((concept, index) => (
+                    <li key={index} className="border p-4 rounded-lg shadow">
+                        <h2 className="text-xl font-semibold">{concept.title}</h2>
+                        <p>{concept.description}</p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/5f7c8925-95f4-4575-87c7-9aad0be5e457) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+export default GaiaVerse;
 ```
 
-**Edit a file directly in GitHub**
+This project was built with [Lovable](https://lovable.dev).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+**Live app**: https://terra-nova-verse.lovable.app
 
-**Use GitHub Codespaces**
+## Build with Lovable
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/5f7c8925-95f4-4575-87c7-9aad0be5e457).
 
-## What technologies are used for this project?
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
-This project is built with:
+## Development
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/5f7c8925-95f4-4575-87c7-9aad0be5e457) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```sh
+git clone <this-repository-url>
+cd <repository-name>
+npm i
+npm run dev
+```
